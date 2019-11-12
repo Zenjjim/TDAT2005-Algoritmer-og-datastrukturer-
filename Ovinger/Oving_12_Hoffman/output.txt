@@ -1,0 +1,343 @@
+ving 12 algoritmer og datastrukturer
+
+Innholdsfortegnelse
+
+ving 12 algoritmer og datastrukturer
+Innledning
+Testfiler for komprimering
+Krav til lsningen
+Deloppgave Lempel-Ziv
+Tips om Lempel-ziv
+Filformat
+Deloppgave Huffmankoding
+Tips om Huffmankoding
+Huffmanndata som trengs for  pakke ut igjen
+Adaptiv Huffmannkoding
+Om bitstrenger
+Om koking
+Javatips for begge deloppgaver
+Noen kodeeksempler
+
+
+  Innledning
+
+Lag et program som kan lese en fil og lage en komprimert utgave.
+Lag et annet program som pakker ut igjen (dekomprimerer) og
+gjenskaper originalen.
+
+Bruk enten Huffmankoding eller Lempel-Ziv for  komprimere. 
+Ressurssterke grupper med mange gode programmerere m gjerne lage 
+begge deler for  oppn best mulig kompresjon. I s fall 
+anbefaler jeg  lage separate programmer, det gjr det enklere  
+teste og dele p arbeidet. Da gr an  sjekke hvilken algoritme 
+som komprimerer best, og om det er en fordel  komprimere output 
+fra Lempel-Ziv med Huffmann.
+
+Programmer som zip bruker Lempel-Ziv-Welsh for  komprimere, og 
+deretter Huffmannkoding p output fra Lempel-Ziv.
+
+Det kan bli en del arbeid, da hndtering av bits & bytes er nytt 
+for mange. Det er derfor denne vingen teller litt mer.
+
+  Testfiler for komprimering
+
+Oppgavetekst(pdf) http://www.iie.ntnu.no/fag/_alg/kompr/opg12.pdf
+
+Oppgavetekst(txt) http://www.iie.ntnu.no/fag/_alg/kompr/opg12.txt
+
+Forelesningen(pdf) http://www.iie.ntnu.no/fag/_alg/kompr/diverse.pdf
+
+Forelesningen(txt) http://www.iie.ntnu.no/fag/_alg/kompr/diverse.txt
+
+Forelesningen(lyx) http://www.iie.ntnu.no/fag/_alg/kompr/diverse.lyx
+
+  Krav til lsningen
+
+1. Implementer enten Lempel-Ziv eller Huffmannkoding. (Eller 
+  begge deler, om dere har tid!) Andre algoritmer blir ikke 
+  godkjent medmindre det er avtalt p forhnd. Lempel-Ziv-Welsh 
+  (LZW) er en annen algoritme.
+
+2. Dere m lage programmene selv, ikke noe cut & paste fra 
+  nettet. Grupper som ikke kan forklare detaljer i programmet 
+  sitt, fr ikke godkjent denne oppgaven. Det er mye  lre av  
+  gjre en slik oppgave, som en ikke fr med seg med cut & paste
+  . Bde nr det gjelder algoritmene, og generell programmering. 
+
+3. Komprimering og utpakking skal skje i separate kjringer. Det 
+  er ikke greit  ha ett samleprogram som bde gjr innpakking og 
+  utpakking i en operasjon. Utpakking skal bare trenge den 
+  komprimerte fila, ikke noen variabler/datastrukturer fra 
+  innpakkinga. 
+
+4. Programmene m lese og skrive filer. Alts ikke bare testdata 
+  i en tabell. 
+
+5. Utpakkingsprogrammet m produsere en fil som er identisk med 
+  originalen. Men det skal ikke trenge tilgang p originalfilen, 
+  bare den komprimerte filen. 
+
+  Likhet kan testes med diff (linux) eller fc (windows)
+
+6. Komprimering m klare  spare minst 10% i forhold til 
+  originalen, for n av mine testfiler. Operativsystemet kan 
+  fortelle hvor store filene er, i bytes.
+
+7. Programmet bruker ikke hasmap/hashset e.l., som ikke er 
+  ndvendig her. 
+
+  Deloppgave Lempel-Ziv
+
+Implementer en variant av Lempel-Ziv datakompresjon. (Men ikke 
+Lempel-Ziv-Welsh)
+
+Finn ut hvor mye programmet deres komprimerer testfilene mine. 
+Det er ikke sikkert alle filtyper lar seg komprimere. Men for  
+f godkjent, m gruppa i det minste kunne komprimere en fil s 
+den sparer 10%, og deretter pakke den ut igjen.
+
+Gruppa m dessuten kunne forklare detaljene i programmene sine.
+
+  Tips om Lempel-ziv
+
+Normalt blir det veldig lite kompresjon p sm filer. Bittesm 
+filer kan brukes for  finne feil i programmet, men for  teste 
+kompresjon br filene minst vre p noen kilobyte.
+
+Det blir noen avgjrelser  ta, som f.eks. hvor langt bakover 
+programmet deres skal lete etter repeterte sekvenser. Zip leter 
+32kB bakover, det fins ogs versjoner som gr 64kB tilbake. Hvis 
+dere lar programmet g lenger tilbake, vil det bli tregere men 
+sannsynligvis komprimere bedre ogs.
+
+Om en vil ha et veldig kjapt program, kan det lnne seg  la seg 
+inspirere av avanserte tekstskalgoritmer. 
+
+  Filformat
+
+Filformat bestemmer dere selv. Det kan fort bli en avveiing 
+mellom hvor komplisert programmet skal vre, og hvor godt det 
+skal komprimere.
+
+Den komprimerte fila kan best av blokker. Hver blokk starter med 
+en byte-verdi, som er et tall mellom -128 og +127. Hvis tallet er 
+negativt, f.eks. -57, betyr det at det er en serie med tegn som 
+ikke lot seg komprimere. (I dette eksempelet, 57 tegn). 
+
+Hvis tallet er positivt, angir det lengden p en repetert 
+sekvens. De neste 1, 2 eller 4 byte er et heltall som forteller 
+hvor langt bakover i fila denne sekvensen er  finne. Med 1byte 
+(byte) er det bare mulig  g 127 tegn bakover. Programmet blir 
+raskt, men komprimerer antagelig ikke s kraftig. Med 2byte 
+(short) gr det an  g opp til 32kB bakover, men vi bruker 
+alts opp en ekstra byte. Med 4byte (int) kan vi g opp til 2GB 
+bakover. Det gir mange flere muligheter for  finne repeterte 
+strenger, men bruker ogs mer plass. Et program som leter opptil 
+2GB bakover, blir sannsynligvis temmelig tregt ogs. Det kan 
+lnne seg  begrense litt
+
+  Deloppgave Huffmankoding
+
+Lag et program som leser inn en fil og genererer en huffmanntre 
+ut fra byte-verdiene i filen. Deretter bruker programmet 
+huffmanntreet til  skrive en komprimert huffmannkodet fil. Sjekk 
+hvor mye plass dere sparer, ved  komprimere testfilene mine. 
+Dere m ogs kunne pakke filene ut igjen.
+
+For pakke ut, trenger utpakkingsprogrammet nok informasjon til  
+gjenskape huffmantreet. Det enkleste er  legge frekvenstabellen 
+frst i den komprimerte fila. Adaptiv huffmankoding er en mer 
+avansert og krevende lsning.
+
+For  f godkjent, m ihvertfall en av filene komprimeres med 
+minst 10%.
+
+  Tips om Huffmankoding
+
+  Huffmanndata som trengs for  pakke ut igjen
+
+Det er ikke ndvendig  lagre huffmanntreet, det holder  lagre 
+frekvenstabellen. Utpakkingsprogrammet kan dermed bygge opp samme 
+tre ut fra frekvensene. 
+
+int frekvenser[256];
+
+En slik frekvenstabell blir alltid 1kB, filen som skal 
+komprimeres m dermed vre stor nok til at komprimeringen sparer 
+mer enn 1kB.
+
+  Adaptiv Huffmannkoding
+
+Med adaptiv huffmannkoding slipper man  lagre frekvensene ogs. 
+Man deler fila opp i blokker med fast strrelse. Frste blokk 
+komprimerer man ikke, den bare kopieres til output. Samtidig 
+lager man et huffmanntre. Neste blokk komprimeres med 
+huffmanntreet fra forrige blokk. Samtidig oppdaterer man 
+frekvensene, og lager nytt huffmanntre som brukes for neste blokk 
+osv. 
+
+Adaptiv huffmankoding blir bedre, fordi den klarer  ta hensyn 
+til at bokstavfordelingen endrer seg underveis.
+
+  Om bitstrenger
+
+En bitstreng er ikke en streng som dette: "00001101". Dette er en 
+tekststreng med 8tegn. Skriver vi dette til en fil, gr det med 
+8byte, og vi oppnr ikke noe datakompresjon. Tvert imot fr vi 
+en veldig stor fil!
+
+Men bitstrengen 0b00001101 er det samme som tallet 13, og kan 
+lagres som n byte.
+
+Datatypen long er p 64 bit. Ingen tegn vil trenge lenger 
+Huffmankode enn det. (Det kan vises at n man komprimerer en fil 
+p 2.7GB, trenger ingen tegn kodes med mer enn 44 bit.) long er 
+dermed egnet til  lagre bitstrenger. En long har alltid 64 
+bit, s en bitstreng-klasse m ogs ha et felt som forteller hvor 
+mange av bitene som er med i bitstrengen.
+
+ skrive bitstrenger til fil, blir en del ekstra arbeid. Java lar 
+oss bare skrive hele byte, og for  vre effektive br vi bare 
+skrive byte-array av en viss strrelse. Men, med 
+hyre/venstreskift samt binre & og | -operasjoner, kan vi f 
+vre bitstrenger inn i et byte-array som s kan skrives til disk. 
+
+Tilsvarende for lesing: Vi leser inn et byte-array, og plukker 
+deretter ut n og n bit for  navigere gjennom huffmanntreet.
+
+  Om koking
+
+P nettet fins mange implementasjoner av Huffmannkoding. De har 
+sine sregenheter som vi kjenner igjen. Programmer som bruker 
+hashset/hasmap vil bli underkjent som kok. hashopplegg trengs 
+ikke for  lse denne oppgaven.
+
+  Javatips for begge deloppgaver
+
+
+---------------------------------------------------------------------------
+  Datatype    bits    byte                     min                    max  
+---------------------------------------------------------------------------
+    byte       8       1                      -128                    127  
+   short       16      2                   -32768                 32767  
+    char       16      2                         0                 65535  
+    int        32      4               -2147483648             2147483647  
+    long       64      8      -9223372036854775808    9223372036854775807  
+---------------------------------------------------------------------------
+
+
+Programmer som leser n og n byte fra fil, blir alltid trege i 
+Java. For  f noe fart i sakene, lnner det seg  lese/skrive 
+strre blokker, f.eks. et array med bytes.
+
+Jeg godkjenner imidlertid lsninger som leser/skriver n og n 
+byte ogs  s lenge de ikke er for trege til  demonstreres. Noe 
+bitfikling blir det uansett med Huffmannoppgaven. Det gr ikke an 
+ skrive en halv byte til fil, man m i det minste samle opp 
+bits til man har en hel byte. Det kan vre lurt  lage en egen 
+klasse for  sende bitstrenger til fil.
+
+  Noen kodeeksempler
+
+//pne filer:
+
+innfil = new DataInputStream(new BufferedInputStream(new 
+FileInputStream(inn_navn)));
+
+utfil = new DataOutputStream(new BufferedOutputStream(new 
+FileOutputStream(ut_navn)));
+
+//Lese data fra fil inn i byte-array:
+
+//   byte []data  : arrayet vi leser inn i
+
+//   int posisjon : index i byte-array for det vi leser inn
+
+//   int mengde   : antall byte vi vil lese inn
+
+innfil.readFully(data, posisjon, mengde);
+
+//Lese inn n byte
+
+byte x;
+
+x = innfil.readByte();
+
+//Har ogs:
+
+short s = innfil.readShort();
+
+char c = innfil.readChar();
+
+int i = innfil.readInt();
+
+long l = innfil.readLong();
+
+//Skrive data fra byte-array til fil:
+
+utfil.write(data, posisjon, mengde);
+
+//Skrive n byte til fil:
+
+byte singlebyte = 17;
+
+utfil.writeByte(singlebyte);
+
+//Har ogs: 
+
+//utfil.writeChar(char c); 
+
+//utfil.writeShort(short s);
+
+//utfil.writeInt(int i);   
+
+//utfil.writeLong(long l);
+
+//Hente 13 bit fra long1, 8 bit fra long2 og 4 bit fra long3, 
+
+//og f det inn i et byte-array:
+
+byte[] data = new byte[3];
+
+long long1 = 0b1101000010011; //13 bit
+
+long long2 = 0b11100111;      //8 bit
+
+long long3 = 0b010;           //3 bit
+
+//8 frste bit fra long1 til data[0]
+
+//vrige bits maskeres bort med &
+
+data[0] = (byte)(long1 & 0b11111111);
+
+//5 gjenvrende bit fra long1 til data[1]
+
+//hyreskiftet fjerner bits vi allerede har lagt i data[0]
+
+//trenger ikke maskere fordi resterende bits i long1 er 0.
+
+data[1] = (byte)(long1 >> 8);
+
+//data[1] har plass til 3 av de 8 bit fra long2
+
+//venstreskifter 5 plasser fordi de 5 frste bits i data[1] er i 
+bruk fra fr
+
+//trenger ikke maskere vekk bits fordi bits over 256 ikke gr inn 
+i en byte uansett
+
+data[1] |= (byte)(long2 << 5);
+
+//5 gjenvrende bit fra long2 til data[2]
+
+//hyreskift fjerner de bits vi allerede la i data[1]
+
+data[2] = (byte)(long2 >> 3); 
+
+//data[2] har plass til de 3 bit fra long3
+
+data[2] |= (byte)(long3 << 5);
+
+System.out.printf("%x %x %x\n", data[0], data[1], data[2]);
+
