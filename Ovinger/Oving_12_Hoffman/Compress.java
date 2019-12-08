@@ -13,10 +13,10 @@ import java.util.*;
 
 class Compress{
   public static void main(String[] args) {
-		String fileName = "opg12.txt";
+		String fileName = "test1.txt";
 		int[] value = new int[256];
     try{
-			BufferedReader inn = new BufferedReader(new InputStreamReader(new FileInputStream(new File(fileName)), "CP850"));
+			BufferedReader inn = new BufferedReader(new InputStreamReader(new FileInputStream(new File(fileName))));
 			int character = 0;
       while((character = inn.read()) != -1) {
 				if(character < 0) character = 255-character;
@@ -88,19 +88,6 @@ class Compress{
 			os.write(output.getBytes());
 
 			os.close();
-			int sum = 0;
-
-			for (int i = 0; i < heap.m.size(); i++) {
-				for (int j = 0; j < heap.bank.size(); j++) {
-					if(heap.m.get(i).c == heap.bank.get(j).c){
-						sum += heap.m.get(i).i * heap.bank.get(j).s.length();
-						break;
-					}
-				}
-			}
-
-			// System.out.println("Number of bytes in compressed file: " + x);
-			// System.out.println("Number of bytes in theory compressed file: " + Math.round(sum/8.0));
 			System.out.println("ZenjRar completed successfully");
 		} catch(Exception e){
 			e.printStackTrace();

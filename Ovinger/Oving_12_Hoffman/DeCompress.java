@@ -4,7 +4,6 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.*;
@@ -15,7 +14,7 @@ class DeCompress{
     int[] value = new int[256];
     int fLenLen, fLen, antZLen, antZ;
     try{
-			BufferedReader inn = new BufferedReader(new InputStreamReader(new FileInputStream(new File(fileName)), "UTF8"));
+			BufferedReader inn = new BufferedReader(new InputStreamReader(new FileInputStream(new File(fileName))));
 			fLenLen = Character.getNumericValue((char) inn.read());
 			String s = "";
 			for (int i = 0; i < fLenLen; i++) {
